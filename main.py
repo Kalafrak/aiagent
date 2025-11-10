@@ -27,8 +27,10 @@ def main():
         contents=messages,
     )
     print(f"{response.text}")
-    print(f"Prompt tokens: {response.usage_metadata.prompt_token_count}")
-    print(f"Response tokens: {response.usage_metadata.candidates_token_count}")
+    if "--verbose" in args:
+        print(f"User prompt: {args[1]}")
+        print(f"Prompt tokens: {response.usage_metadata.prompt_token_count}")
+        print(f"Response tokens: {response.usage_metadata.candidates_token_count}")
 
 
 if __name__ == "__main__":
