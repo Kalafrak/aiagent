@@ -1,12 +1,15 @@
 # python
-def show(title, wd, dir_):
-    from functions.get_files_info import get_files_info
-    print(title)
-    result = get_files_info(wd, dir_)
-    print(" " + result.replace("\n", "\n "))
+from functions.get_file_content import get_file_content
+
+def show_case(wd, path):
+    result = get_file_content(wd, path)
+    # keep output concise so it’s readable
+    snippet = result if result.startswith("Error:") else result.splitlines()[0]
+    print(f"{path}: {snippet}")
 
 if __name__ == "__main__":
-    show("Result for current directory:", "calculator", ".")
-    show("\nResult for 'pkg' directory:", "calculator", "pkg")
-    show("\nResult for '/bin' directory:", "calculator", "/bin")
-    show("\nResult for '../' directory:", "calculator", "../")
+    print("Running file content checks:")
+    print(get_file_content("calculator", "main.py"))
+    print(get_file_content("calculator", "pkg/calculator.py"))
+    print(get_file_content("calculator", "/bin/cat"))
+    print(get_file_content("calculator", "pkg/does_not_exist.py"))
