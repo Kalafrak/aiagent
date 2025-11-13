@@ -1,5 +1,6 @@
 import os
 import sys
+from config import *
 
 from dotenv import load_dotenv
 load_dotenv(dotenv_path=".env", override=True)
@@ -23,8 +24,9 @@ def main():
     if len(args) < 2:
         sys.exit("Error: No prompt given!")
     response = client.models.generate_content(
-        model="gemini-2.0-flash-001", 
+        model=model_name, 
         contents=messages,
+        config=types.GenerateContentConfig(system_instruction=system_prompt),
     )
     print(f"{response.text}")
     if "--verbose" in args:
