@@ -1,6 +1,7 @@
 import os
 import sys
 from config import *
+from functions.get_files_info import schema_get_files_info
 
 from dotenv import load_dotenv
 load_dotenv(dotenv_path=".env", override=True)
@@ -14,7 +15,11 @@ from google.genai import types
 
 client = genai.Client(api_key=api_key)
 
-
+available_functions = types.Tool(
+    function_declarations=[
+        schema_get_files_info,
+    ]
+)
 
 def main():
     args = sys.argv
@@ -26,9 +31,15 @@ def main():
     response = client.models.generate_content(
         model=model_name, 
         contents=messages,
-        config=types.GenerateContentConfig(system_instruction=system_prompt),
+        config=types.GenerateContentConfig(
+            tools=[available_functions], system_instruction=system_prompt
+        )
     )
-    print(f"{response.text}")
+    if response.function_calls:
+        for function_call_part in response.function_calls:
+            print(f"Calling function: {function_call_part.name}({function_call_part.args})")
+    else:
+        print(f"{response.text}")
     if "--verbose" in args:
         print(f"User prompt: {args[1]}")
         print(f"Prompt tokens: {response.usage_metadata.prompt_token_count}")
