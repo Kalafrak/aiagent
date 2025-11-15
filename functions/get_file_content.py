@@ -1,5 +1,20 @@
 import os
 from config import *
+from google.genai import types
+
+schema_get_file_content = types.FunctionDeclaration(
+    name="get_file_content",
+    description="Returns the content of a specified file, constrained to the working directory. If the file exceeds MAX_CHARS, it truncates the content and appends a notice.",
+    parameters=types.Schema(
+        type=types.Type.OBJECT,
+        properties={
+            "directory": types.Schema(
+                type=types.Type.STRING,
+                description="The path to the file to read, relative to the working directory.",
+            ),
+        },
+    ),
+)
 
 def get_file_content(working_directory, file_path):
     abs_work = os.path.abspath(working_directory)
