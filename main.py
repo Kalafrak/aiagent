@@ -5,6 +5,7 @@ from functions.get_files_info import schema_get_files_info
 from functions.get_file_content import schema_get_file_content
 from functions.run_python_file import schema_run_python_file
 from functions.write_file import schema_write_file
+from call_function import call_function
 
 from dotenv import load_dotenv
 load_dotenv(dotenv_path=".env", override=True)
@@ -40,7 +41,10 @@ def main():
     )
     if response.function_calls:
         for function_call_part in response.function_calls:
-            print(f"Calling function: {function_call_part.name}({function_call_part.args})")
+            function_call_result = call_function(function_call_part, verbose="--verbose" in args)
+            tool_resp = function_call_result.parts[0].function_response.response
+            if "--verbose" in args:
+                print(f"-> {tool_resp}")
     else:
         print(f"{response.text}")
     if "--verbose" in args:
